@@ -443,30 +443,6 @@ void getWeather ()
     }
     else
       Serial.println ("temp NOT found!");
-    //tempMin
-    bT = line.indexOf ("\"temp_min\":");
-    if (bT > 0)
-    {
-      bT2 = line.indexOf (",\"", bT + 11);
-      sval = line.substring (bT + 11, bT2);
-      Serial.print ("temp min: ");
-      Serial.println (sval);
-      tempMin = sval.toInt ();
-    }
-    else
-      Serial.println ("temp_min NOT found!");
-    //tempMax
-    bT = line.indexOf ("\"temp_max\":");
-    if (bT > 0)
-    {
-      bT2 = line.indexOf ("},", bT + 11);
-      sval = line.substring (bT + 11, bT2);
-      Serial.print ("temp max: ");
-      Serial.println (sval);
-      tempMax = sval.toInt ();
-    }
-    else
-      Serial.println ("temp_max NOT found!");
     //pressM
     bT = line.indexOf ("\"pressure\":");
     if (bT > 0)
@@ -1129,45 +1105,7 @@ void draw_weather ()
     //-pressure
     lstr = String (presM);
     xo = 12*TF_COLS;
-    TFDrawText (&display, lstr, xo, yo, cc_blu);
-    //draw temp min/max
-    /*if (tempMin > -10000)
-    {
-      xo = 0*TF_COLS; yo = 26;
-      TFDrawText (&display, "   ", xo, yo, 0);
-      lstr = String (tempMin);// + String((*u_metric=='Y')?"C":"F");
-      //blue if negative
-      int ct = cc_dgr;
-      if (tempMin < 0)
-      {
-        ct = cc_blu;
-        lstr = String (-tempMin);// + String((*u_metric=='Y')?"C":"F");
-      }
-      Serial.print ("temp min: ");
-      Serial.println (lstr);
-      TFDrawText (&display, lstr, xo, yo, ct);
-    }
-    if (tempMax > -10000)
-    {
-      TFDrawText (&display, "   ", 13*TF_COLS, yo, 0);
-      //move the text to the right or left as needed
-      xo = 14*TF_COLS; yo = 26;
-      if (tempMax < 10)
-        xo = 15*TF_COLS;
-      if (tempMax > 99)
-        xo = 13*TF_COLS;
-      lstr = String (tempMax);// + String((*u_metric=='Y')?"C":"F");
-      //blue if negative
-      int ct = cc_dgr;
-      if (tempMax < 0)
-      {
-        ct = cc_blu;
-        lstr = String (-tempMax);// + String((*u_metric=='Y')?"C":"F");
-      }
-      Serial.print ("temp max: ");
-      Serial.println (lstr);
-      TFDrawText (&display, lstr, xo, yo, ct);
-    }*/
+    TFDrawText (&display, lstr, xo, yo, cc_gry);
     //draw wind speed and direction
     if (wind_speed > -10000)
     {
@@ -1175,13 +1113,17 @@ void draw_weather ()
       TFDrawText (&display, "   ", xo, yo, 0);
       lstr = String (wind_speed);// + String((*u_metric=='Y')?"M/S":"M/H");
       //red if wind is strong
-      int ct = cc_gry;
+      int ct = cc_grn;
  
-	  if (wind_speed > 10)
+	  if (wind_speed >= 8)
       {
-        ct = cc_blu;
+        ct = cc_lblu;
       }
-      if (wind_speed > 18)
+	  if (wind_speed >= 12)
+      {
+        ct = cc_ylw;
+      }
+      if (wind_speed >= 18)
       {
         ct = cc_red;
       }
@@ -1198,11 +1140,10 @@ void draw_weather ()
      
       TFDrawText (&display, "   ", xo, yo, 0);     
       lstr = String (wind_direction);// + String((*u_metric=='Y')?"C":"F");
-      int ct = cc_gry;
         
       Serial.print ("wind_direction: ");
       Serial.println (lstr);
-      TFDrawText (&display, lstr, xo, yo, ct);
+      TFDrawText (&display, lstr, xo, yo, cc_gry);
     }
 	
     //weather conditions
@@ -1237,7 +1178,7 @@ void draw_love ()
 //
 void draw_date ()
 {
-  int cc_grn = display.color565 (0, 255, 0);
+  int cc_grn = display.color565 (255, 0, 255);
   Serial.println ("showing the date");
   //for (int i = 0 ; i < 12; i++)
     //TFDrawChar (&display, '0' + i%10, xo + i * 5, yo, display.color565 (0, 255, 0));
@@ -1415,12 +1356,12 @@ void loop()
       if (m1 != digit3.Value ()) digit3.Morph (m1);
       prevmm = mm;
       //
-//#define SHOW_SOME_LOVE
-#ifdef SHOW_SOME_LOVE
-      if (mm == 0)
-        draw_love ();
-      else
-#endif
+		//#define SHOW_SOME_LOVE
+		#ifdef SHOW_SOME_LOVE
+			  if (mm == 0)
+				draw_love ();
+			  else
+		#endif
         draw_weather ();
     }
     //hours
