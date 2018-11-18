@@ -1205,7 +1205,7 @@ void draw_weather ()
       TFDrawText (&display, "   ", xo, yo, 0);
       lstr = String (wind_speed);// + String((*u_metric=='Y')?"M/S":"M/H");
       //red if wind is strong
-      int ct = cc_dgr;
+      int ct = cc_wht;
       if (wind_speed > 10)
       {
         ct = cc_blu;
@@ -1228,7 +1228,7 @@ void draw_weather ()
       TFDrawText (&display, "   ", xo, yo, 0);     
       lstr = String (wind_direction);// + String((*u_metric=='Y')?"C":"F");
       //blue if negative
-      int ct = cc_dgr;
+      int ct = cc_wht;
       
       Serial.print ("wind_direction: ");
       Serial.println (lstr);
