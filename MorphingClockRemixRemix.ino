@@ -1097,15 +1097,15 @@ xo = 4*TF_COLS; yo = 1;
 
 void draw_weather ()
 {
-  int cc_wht = display.color565 (255, 255, 255);
-  int cc_red = display.color565 (255, 0, 0);
-  int cc_grn = display.color565 (0, 255, 0);
-  int cc_blu = display.color565 (0, 0, 255);
-  int cc_ylw = display.color565 (255, 255, 0);
+  int cc_wht = display.color565 (cin, cin, cin);
+  int cc_red = display.color565 (cin, 0, 0);
+  int cc_grn = display.color565 (0, cin, 0);
+  int cc_blu = display.color565 (0, 0, cin);
+  int cc_ylw = display.color565 (cin, cin, 0);
   int cc_gry = display.color565 (128, 128, 128);
   int cc_dgr = display.color565 (30, 30, 30);
-  int cc_lblu = display.color565 (0, 255, 255);
-  int cc_ppl = display.color565 (255, 0, 255);
+  int cc_lblu = display.color565 (0, 255, cin);
+  int cc_ppl = display.color565 (cin, 0, cin);
   Serial.println ("showing the weather");
   xo = 0; yo = 1;
   TFDrawText (&display, String("                "), xo, yo, cc_dgr);
@@ -1206,7 +1206,9 @@ void draw_weather ()
       lstr = String (wind_speed);// + String((*u_metric=='Y')?"M/S":"M/H");
       //red if wind is strong
       int ct = cc_gry;
-      if (wind_speed > 10)
+      if (cin == 25)
+        ct = cc_dgr;     
+	  if (wind_speed > 10)
       {
         ct = cc_blu;
       }
@@ -1229,7 +1231,8 @@ void draw_weather ()
       lstr = String (wind_direction);// + String((*u_metric=='Y')?"C":"F");
       //blue if negative
       int ct = cc_gry;
-      
+      if (cin == 25)
+        ct = cc_dgr;           
       Serial.print ("wind_direction: ");
       Serial.println (lstr);
       TFDrawText (&display, lstr, xo, yo, ct);
