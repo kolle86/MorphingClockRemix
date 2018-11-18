@@ -1038,6 +1038,7 @@ void draw_weather ()
 {
   int cc_wht = display.color565 (255, 255, 255);
   int cc_red = display.color565 (255, 0, 0);
+  int cc_org = display.color565 (255, 165, 0);
   int cc_grn = display.color565 (0, 255, 0);
   int cc_blu = display.color565 (0, 0, 255);
   int cc_ylw = display.color565 (255, 255, 0);
@@ -1062,16 +1063,16 @@ void draw_weather ()
     {
 	  if (tempM >= 30)
         lcc = cc_red;
-      if (tempM >= 26)
+      if (tempM >= 25)
+        lcc = cc_org;
+      if (tempM < 25)
         lcc = cc_ylw;
-      if (tempM < 26)
+      if (tempM < 20)
         lcc = cc_grn;
-      if (tempM < 22)
+      if (tempM < 15)
         lcc = cc_blu;
       if (tempM < 10)
-        lcc = cc_ppl;
-      if (tempM < 6)
-        lcc = cc_lblu;
+        lcc = cc_lblu;        
       if (tempM < 1)
         lcc = cc_wht;
     }
@@ -1093,11 +1094,13 @@ void draw_weather ()
     //weather conditions
     //-humidity
     lcc = cc_red;
-    if (humiM < 65)
+    if (humiM < 80)
+      lcc = cc_org;
+    if (humiM < 60)
       lcc = cc_grn;
-    if (humiM < 35)
+    if (humiM < 40)
       lcc = cc_blu;
-    if (humiM < 15)
+    if (humiM < 20)
       lcc = cc_wht;
     lstr = String (humiM) + "%";
     xo = 8*TF_COLS;
@@ -1105,7 +1108,7 @@ void draw_weather ()
     //-pressure
     lstr = String (presM);
     xo = 12*TF_COLS;
-    TFDrawText (&display, lstr, xo, yo, cc_gry);
+    TFDrawText (&display, lstr, xo, yo, cc_dgr);
     //draw wind speed and direction
     if (wind_speed > -10000)
     {
@@ -1115,15 +1118,23 @@ void draw_weather ()
       //red if wind is strong
       int ct = cc_grn;
  
-	  if (wind_speed >= 8)
+	  if (wind_speed >= 6)
       {
         ct = cc_lblu;
       }
-	  if (wind_speed >= 12)
+	    if (wind_speed >= 8)
+      {
+        ct = cc_blu;
+      }
+      if (wind_speed >= 10)
       {
         ct = cc_ylw;
-      }
-      if (wind_speed >= 18)
+      }      
+      if (wind_speed >= 12)
+      {
+        ct = cc_org;
+      }      
+      if (wind_speed >= 16)
       {
         ct = cc_red;
       }
@@ -1143,7 +1154,7 @@ void draw_weather ()
         
       Serial.print ("wind_direction: ");
       Serial.println (lstr);
-      TFDrawText (&display, lstr, xo, yo, cc_gry);
+      TFDrawText (&display, lstr, xo, yo, cc_dgr);
     }
 	
     //weather conditions
