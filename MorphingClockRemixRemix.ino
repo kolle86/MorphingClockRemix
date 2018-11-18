@@ -1108,7 +1108,7 @@ void draw_weather ()
     //-pressure
     lstr = String (presM);
     xo = 12*TF_COLS;
-    TFDrawText (&display, lstr, xo, yo, cc_dgr);
+    TFDrawText (&display, lstr, xo, yo, cc_gry);
     //draw wind speed and direction
     if (wind_speed > -10000)
     {
@@ -1154,7 +1154,7 @@ void draw_weather ()
         
       Serial.print ("wind_direction: ");
       Serial.println (lstr);
-      TFDrawText (&display, lstr, xo, yo, cc_dgr);
+      TFDrawText (&display, lstr, xo, yo, cc_gry);
     }
 	
     //weather conditions
