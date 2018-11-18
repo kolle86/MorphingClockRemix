@@ -57,7 +57,6 @@ Ticker display_ticker;
 PxMATRIX display(64, 32, P_LAT, P_OE, P_A, P_B, P_C, P_D, P_E);
 
 //=== SEGMENTS ===
-int cin = 25; //color intensity
 #include "Digit.h"
 Digit digit0(&display, 0, 63 - 1 - 9*1, 8, display.color565(0, 0, 255));
 Digit digit1(&display, 0, 63 - 1 - 9*2, 8, display.color565(0, 0, 255));
@@ -273,9 +272,6 @@ void wifi_setup ()
   getWeather ();
 }
 
-int t_now;
-int t_sunrise;
-int t_sunset;
 byte hh;
 byte mm;
 byte ss;
@@ -346,10 +342,7 @@ String condS = "";
 int wind_speed;
 int wind_nr;
 String wind_direction;
-int sunriseH = 0;
-int sunriseM = 0;
-int sunsetH = 0;
-int sunsetM = 0;
+
 void getWeather ()
 {
   if (!apiKey.length ())
@@ -498,35 +491,6 @@ void getWeather ()
     }
     else
       Serial.println ("humidity NOT found!");
-  	//sunrise
-    bT = line.indexOf ("\"sunrise\":");
-    if (bT > 0)
-    {
-      bT2 = line.indexOf (",\"", bT + 10);
-      sval = line.substring (bT + 10, bT2);
-      sunriseH = hour(sval.toInt() + (String(timezone).toInt() * 3600));
-      sunriseM = minute(sval.toInt());
-      Serial.print ("sunrise ");
-      Serial.println (sunriseH);
-      Serial.println (sunriseM);	  
-    }
-    else
-      Serial.println ("sunrise NOT found!");
-  
-    //sunset
-    bT = line.indexOf ("\"sunset\":");
-    if (bT > 0)
-    {
-      bT2 = line.indexOf (",\"", bT + 9);
-      sval = line.substring (bT + 9, bT2);
-      sunsetH = hour(sval.toInt() + (String(timezone).toInt() * 3600));
-      sunsetM = minute(sval.toInt());
-      Serial.print ("sunrset ");
-      Serial.println (sunsetH);
-      Serial.println (sunsetM);    	  
-    }
-    else
-      Serial.println ("sunset NOT found!");  
     //wind speed
     bT = line.indexOf ("\"speed\":");
     if (bT > 0)
@@ -1017,7 +981,6 @@ int *ovctn_ani[] = {ovrcstn_ico};
 
 int xo = 1, yo = 26;
 char use_ani = 0;
-char daytime = 1;
 void draw_weather_conditions ()
 {
   //0 - unk, 1 - sunny, 2 - cloudy, 3 - overcast, 4 - rainy, 5 - thunders, 6 - snow
@@ -1025,7 +988,7 @@ void draw_weather_conditions ()
   Serial.println (condM);
   //cleanup previous cond
   xo = 3*TF_COLS; yo = 1;
-  if (condM == 0 && daytime)
+  if (condM == 0)
   {
     Serial.print ("!weather condition icon unknown, show: ");
     Serial.println (condS);
@@ -1097,15 +1060,15 @@ xo = 4*TF_COLS; yo = 1;
 
 void draw_weather ()
 {
-  int cc_wht = display.color565 (cin, cin, cin);
-  int cc_red = display.color565 (cin, 0, 0);
-  int cc_grn = display.color565 (0, cin, 0);
-  int cc_blu = display.color565 (0, 0, cin);
-  int cc_ylw = display.color565 (cin, cin, 0);
+  int cc_wht = display.color565 (255, 255, 255);
+  int cc_red = display.color565 (255, 0, 0);
+  int cc_grn = display.color565 (0, 255, 0);
+  int cc_blu = display.color565 (0, 0, 255);
+  int cc_ylw = display.color565 (255, 255, 0);
   int cc_gry = display.color565 (128, 128, 128);
   int cc_dgr = display.color565 (30, 30, 30);
-  int cc_lblu = display.color565 (0, 255, cin);
-  int cc_ppl = display.color565 (cin, 0, cin);
+  int cc_lblu = display.color565 (0, 255, 255);
+  int cc_ppl = display.color565 (255, 0, 255);
   Serial.println ("showing the weather");
   xo = 0; yo = 1;
   TFDrawText (&display, String("                "), xo, yo, cc_dgr);
@@ -1121,12 +1084,19 @@ void draw_weather ()
     int lcc = cc_red;
     if (*u_metric == 'Y')
     {
-      //C
+	  if (tempM >= 30)
+        lcc = cc_red;
+      if (tempM >= 26)
+        lcc = cc_ylw;
       if (tempM < 26)
         lcc = cc_grn;
-      if (tempM < 18)
+      if (tempM < 22)
         lcc = cc_blu;
+      if (tempM < 10)
+        lcc = cc_ppl;
       if (tempM < 6)
+        lcc = cc_lblu;
+      if (tempM < 1)
         lcc = cc_wht;
     }
     else
@@ -1206,8 +1176,7 @@ void draw_weather ()
       lstr = String (wind_speed);// + String((*u_metric=='Y')?"M/S":"M/H");
       //red if wind is strong
       int ct = cc_gry;
-      if (cin == 25)
-        ct = cc_dgr;     
+ 
 	  if (wind_speed > 10)
       {
         ct = cc_blu;
@@ -1229,10 +1198,8 @@ void draw_weather ()
      
       TFDrawText (&display, "   ", xo, yo, 0);     
       lstr = String (wind_direction);// + String((*u_metric=='Y')?"C":"F");
-      //blue if negative
       int ct = cc_gry;
-      if (cin == 25)
-        ct = cc_dgr;           
+        
       Serial.print ("wind_direction: ");
       Serial.println (lstr);
       TFDrawText (&display, lstr, xo, yo, ct);
@@ -1270,7 +1237,7 @@ void draw_love ()
 //
 void draw_date ()
 {
-  int cc_grn = display.color565 (0, cin, 0);
+  int cc_grn = display.color565 (0, 255, 0);
   Serial.println ("showing the date");
   //for (int i = 0 ; i < 12; i++)
     //TFDrawChar (&display, '0' + i%10, xo + i * 5, yo, display.color565 (0, 255, 0));
@@ -1389,39 +1356,14 @@ void loop()
     prevss = ss;
     prevmm = mm;
     prevhh = hh;
-	//brightness control: dimmed during the night(25), bright during the day(150)	
-    t_sunset=(sunsetH*100)+sunsetM;
-    t_sunrise=(sunriseH*100)+sunriseM;
-	t_now = (hh*100)+mm;
-	
-	  if ((t_now >= t_sunset) && cin == 150)
-      {
-        cin = 25;
-        Serial.println ("night mode brightness");
-        daytime = 0;
-      }
-  	if ((t_now < t_sunrise) && cin == 150)
-      {
-        cin = 25;
-        Serial.println ("night mode brightness");
-        daytime = 0;
-      }
-      //during the day, bright
-  	if ((t_now >= t_sunrise && t_now < t_sunset) && cin == 25)
-      {
-        cin = 150;
-        Serial.println ("day mode brightness");
-        daytime = 1;
-      }
+
     //we had a sync so draw without morphing
     int cc_gry = display.color565 (128, 128, 128);
     int cc_dgr = display.color565 (30, 30, 30);
     //dark blue is little visible on a dimmed screen
     //int cc_blu = display.color565 (0, 0, cin);
     int cc_col = cc_gry;
-    //
-    if (cin == 25)
-      cc_col = cc_dgr;
+    
     //reset digits color
     digit0.SetColor (cc_col);
     digit1.SetColor (cc_col);
@@ -1466,11 +1408,7 @@ void loop()
     //minutes
     if (mm != prevmm)
     {
-	  if (mm == sunsetM || mm == sunriseM)
-      {
-        ntpsync = 1;
-        //bri change is taken care of due to the sync
-      }
+
       int m0 = mm % 10;
       int m1 = mm / 10;
       if (m0 != digit2.Value ()) digit2.Morph (m0);
@@ -1491,12 +1429,7 @@ void loop()
       prevhh = hh;
       //
       draw_date ();
-      //brightness control: dimmed during the night(25), bright during the day(150)
-      if (hh == sunsetH || hh == sunriseH)
-      {
-        ntpsync = 1;
-        //bri change is taken care of due to the sync
-      }
+
       //military time?
       if (hh > 12 && military[0] == 'N')
         hh -= 12;
