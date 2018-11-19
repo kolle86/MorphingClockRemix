@@ -1117,8 +1117,8 @@ void draw_weather ()
       lstr = String (wind_speed);// + String((*u_metric=='Y')?"M/S":"M/H");
       //red if wind is strong
       int ct = cc_wht;
-	  if(wind_speed>=1{
-		int ct = cc_grn;
+	  if(wind_speed>=1){
+		ct = cc_grn;
 	  }	 
 	  if (wind_speed >= 4)
       {
