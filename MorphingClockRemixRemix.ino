@@ -1116,9 +1116,11 @@ void draw_weather ()
       TFDrawText (&display, "   ", xo, yo, 0);
       lstr = String (wind_speed);// + String((*u_metric=='Y')?"M/S":"M/H");
       //red if wind is strong
-      int ct = cc_grn;
- 
-	  if (wind_speed >= 6)
+      int ct = cc_wht;
+	  if(wind_speed>=1{
+		int ct = cc_grn;
+	  }	 
+	  if (wind_speed >= 4)
       {
         ct = cc_lblu;
       }
@@ -1126,15 +1128,15 @@ void draw_weather ()
       {
         ct = cc_blu;
       }
-      if (wind_speed >= 10)
+      if (wind_speed >= 12)
       {
         ct = cc_ylw;
       }      
-      if (wind_speed >= 12)
+      if (wind_speed >= 16)
       {
         ct = cc_org;
       }      
-      if (wind_speed >= 16)
+      if (wind_speed >= 20)
       {
         ct = cc_red;
       }
