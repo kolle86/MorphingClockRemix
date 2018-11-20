@@ -342,6 +342,7 @@ String condS = "";
 int wind_speed;
 int wind_nr;
 String wind_direction;
+int gust = 0;
 
 void getWeather ()
 {
@@ -467,7 +468,17 @@ void getWeather ()
     }
     else
       Serial.println ("humidity NOT found!");
-    //wind speed
+    //gust
+    bT = line.indexOf ("\"gust\":");
+    if (bT > 0)
+    {
+      bT2 = line.indexOf (",\"", bT + 7);
+      sval = line.substring (bT + 7, bT2);
+      gust = sval.toInt();
+    }
+    else
+      Serial.println ("windspeed NOT found!");    
+  //wind speed
     bT = line.indexOf ("\"speed\":");
     if (bT > 0)
     {
@@ -1114,29 +1125,36 @@ void draw_weather ()
     {
       xo = 0*TF_COLS; yo = 26;
       TFDrawText (&display, "   ", xo, yo, 0);
-      lstr = String (wind_speed);// + String((*u_metric=='Y')?"M/S":"M/H");
-      //red if wind is strong
+      //if there is gust, draw gust instead of wind speed
+      if(gust > wind_speed)
+      {
+        value = gust;
+      }else
+      {
+        value = wind_speed;
+      }      //if there is gust, draw gust instead of wind speed
+      lstr = String (value);// + String((*u_metric=='Y')?"M/S":"M/H");         
       int ct = cc_wht;
-	  if(wind_speed>=1){
-		ct = cc_grn;
+	  if(value>=1){
+		  ct = cc_grn;
 	  }	 
-	  if (wind_speed >= 4)
+	  if (value >= 4)
       {
         ct = cc_lblu;
       }
-	    if (wind_speed >= 8)
+	    if (value >= 8)
       {
         ct = cc_blu;
       }
-      if (wind_speed >= 12)
+      if (value >= 12)
       {
         ct = cc_ylw;
       }      
-      if (wind_speed >= 16)
+      if (value >= 16)
       {
         ct = cc_org;
       }      
-      if (wind_speed >= 20)
+      if (value >= 20)
       {
         ct = cc_red;
       }
