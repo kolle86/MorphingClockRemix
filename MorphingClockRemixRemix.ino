@@ -341,7 +341,7 @@ int condM = -1;  //-1 - undefined, 0 - unk, 1 - sunny, 2 - cloudy, 3 - overcast,
 String condS = "";
 int wind_speed;
 int wind_nr;
-String wind_direction;
+String wind_direction = "";
 int gust = 0;
 
 void getWeather ()
@@ -477,7 +477,10 @@ void getWeather ()
       gust = sval.toInt();
     }
     else
+    {
       Serial.println ("windspeed NOT found!");    
+      gust = 0;
+    }   
   //wind speed
     bT = line.indexOf ("\"speed\":");
     if (bT > 0)
@@ -524,15 +527,17 @@ void getWeather ()
           wind_direction = "N";
           break;        
         default:
-          wind_direction = "NA";
+          wind_direction = "";
           break;
     }                
-      Serial.println(wind_direction);
       Serial.print ("wind direction ");      
       Serial.println(wind_direction);
     }
     else
-      Serial.println ("windspeed NOT found!");  
+    {
+      Serial.println ("windspeed NOT found!");    
+      wind_direction = "";
+    } 
   }//connected
   
 }
