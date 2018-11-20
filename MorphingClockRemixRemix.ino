@@ -1057,6 +1057,7 @@ void draw_weather ()
   int cc_dgr = display.color565 (30, 30, 30);
   int cc_lblu = display.color565 (0, 255, 255);
   int cc_ppl = display.color565 (255, 0, 255);
+  int value = 0;
   Serial.println ("showing the weather");
   xo = 0; yo = 1;
   TFDrawText (&display, String("                "), xo, yo, cc_dgr);
@@ -1133,7 +1134,7 @@ void draw_weather ()
       {
         value = wind_speed;
       }      //if there is gust, draw gust instead of wind speed
-      lstr = String (value);// + String((*u_metric=='Y')?"M/S":"M/H");         
+      lstr = String (value) + String((gust>wind_speed)?"'":"");         
       int ct = cc_wht;
 	  if(value>=1){
 		  ct = cc_grn;
