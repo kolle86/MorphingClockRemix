@@ -1336,12 +1336,8 @@ void loop()
     prevhh = hh;
 
     //we had a sync so draw without morphing
-    int cc_gry = display.color565 (128, 128, 128);
-    int cc_dgr = display.color565 (30, 30, 30);
-    //dark blue is little visible on a dimmed screen
-    //int cc_blu = display.color565 (0, 0, cin);
-    int cc_col = cc_gry;
-    
+    int cc_col = display.color565 (255, 255, 255);    
+
     //reset digits color
     digit0.SetColor (cc_col);
     digit1.SetColor (cc_col);
