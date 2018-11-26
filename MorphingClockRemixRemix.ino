@@ -69,7 +69,7 @@ Digit digit5(&display, 0, 63 - 7 - 9*6, 8, display.color565(0, 0, 255));
 // ISR for display refresh
 void display_updater ()
 {
-  //display.displayTestPattern(70);
+  display.setBrightness(50);
   display.display (70);
 }
 #endif
