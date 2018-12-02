@@ -1065,7 +1065,7 @@ void draw_weather ()
   int value = 0;
   Serial.println ("showing the weather");
   xo = 0; yo = 1;
-  TFDrawText (&display, String("                "), xo, yo, cc_dgr);
+  TFDrawText (&display, String("                   "), xo, yo, cc_dgr);
   if (tempM == -10000 || humiM == -10000 || presM == -10000)
   {
     //TFDrawText (&display, String("NO WEATHER DATA"), xo, yo, cc_dgr);
@@ -1125,6 +1125,8 @@ void draw_weather ()
     //-pressure
     lstr = String (presM);
     xo = 12*TF_COLS;
+	if(presM < 1000)
+        xo=13*TF_COLS;   
     TFDrawText (&display, lstr, xo, yo, cc_gry);
     //draw wind speed and direction
     if (wind_speed > -10000)
