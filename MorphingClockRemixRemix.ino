@@ -1056,7 +1056,7 @@ void draw_weather ()
   int cc_red = display.color565 (255, 0, 0);
   int cc_org = display.color565 (255, 165, 0);
   int cc_grn = display.color565 (0, 255, 0);
-  int cc_blu = display.color565 (0, 0, 255);
+  int cc_blu = display.color565 (0, 128, 255);
   int cc_ylw = display.color565 (255, 255, 0);
   int cc_gry = display.color565 (128, 128, 128);
   int cc_dgr = display.color565 (30, 30, 30);
