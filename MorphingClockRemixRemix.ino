@@ -49,7 +49,6 @@ Digit digit5(&display, 0, 63 - 7 - 9*6, 8, display.color565(0, 0, 255));
 // ISR for display refresh
 void display_updater ()
 {
-  display.setBrightness(50);
   display.display (70);
 }
 #endif
@@ -209,6 +208,7 @@ void setup ()
     }
   });
   //prep screen for clock display
+  display.setBrightness(50);
   display.fillScreen (0);
   int cc_gry = display.color565 (128, 128, 128);
   //reset digits color
@@ -1242,6 +1242,16 @@ void web_server ()
       httprsp += "<strong>daylight: off</strong><br>";
       Serial.println ("daylight OFF");
       svf = 1;
+    }else if ((pidx = httprq.indexOf ("/brightness/")) != -1)
+    {
+      int pidx2 = httprq.indexOf (" ", pidx + 12);
+      if (pidx2 != -1)
+      {
+        String bri = httprq.substring (pidx + 12, pidx2);
+        display.setBrightness (bri.toInt ());
+        Serial.print (">brightness: ");
+        Serial.println (bri);
+      }
     }
     else if ((pidx = httprq.indexOf ("/timezone/")) != -1)
     {
@@ -1269,6 +1279,13 @@ void web_server ()
     httprsp += "<a href='/timezone/1'>timezone 1</a><br>";
     httprsp += "<a href='/timezone/2'>timezone 2</a><br>";
     httprsp += "use /timezone/x for timezone 'x'<br>";
+    httprsp += "<a href='/brightness/1'>brightness 1</a><br>";	  
+    httprsp += "<a href='/brightness/10'>brightness 10</a><br>";
+    httprsp += "<a href='/brightness/25'>brightness 25</a><br>";    	  
+    httprsp += "<a href='/brightness/50'>brightness 50</a><br>";
+    httprsp += "<a href='/brightness/100'>brightness 100</a><br>";
+    httprsp += "<a href='/brightness/200'>brightness 200</a><br>";
+    httprsp += "use /brightness/x for display brightness 'x' from 0 (darkest) to 255 (brightest)<br>";
     httprsp += "<br><br>";
     httprsp += "current configuration<br>";
     httprsp += "timezone: " + String (c_vars[EV_TZ]) + "<br>";
