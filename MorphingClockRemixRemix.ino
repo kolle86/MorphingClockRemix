@@ -979,9 +979,9 @@ void draw_weather ()
     int lcc = cc_red;
     if (*u_metric == 'Y')
     {
-	  if (tempM >= 30)
+      
         lcc = cc_red;
-      if (tempM >= 25)
+      if (tempM < 30)
         lcc = cc_org;
       if (tempM < 25)
         lcc = cc_ylw;
